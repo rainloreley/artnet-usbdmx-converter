@@ -2,14 +2,14 @@ name: Build app
 on:
   push:
     branches:
-      - testing
+      - main
 
 jobs:
   build:
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
-        runner: [ macos-latest ]
+        runner: [ windows-latest ]
     
     steps:
       - uses: actions/checkout@v1
