@@ -1,6 +1,6 @@
 {
   "name": "artnet-usbdmx-converter",
-  "version": "1.0.3",
+  "version": "1.0.0",
   "description": "Send ArtNet signals to USBDMX interfaces",
   "main": "dist/index.js",
   "bin": "./dist/index.js",
@@ -16,8 +16,7 @@
       "node_modules/figlet/fonts/Standard.flf"
     ],
     "targets": [
-      "node16.16.0-win-x64",
-      "node16.16.0-macos-x64"
+      "node16.16.0-win-x64"
     ],
     "outputPath": "out/"
   },
