@@ -1,0 +1,31 @@
+name: Build app
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        runner: [ macos-latest, windows-latest ]
+    
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.8.1
+        with:
+          node-version: 16.20.2
+      - name: Install yarn
+        run: npm i -g yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Build Project
+        run: yarn make
+      - name: Archive production artifacts
+        uses: kittaakos/upload-artifact-as-is@v0
+        with:
+          path: |
+            out/*.*
+      

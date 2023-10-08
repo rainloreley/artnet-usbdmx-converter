@@ -1,0 +1,46 @@
+{
+  "name": "artnet-usbdmx-converter",
+  "version": "1.0.3",
+  "description": "Send ArtNet signals to USBDMX interfaces",
+  "main": "dist/index.js",
+  "bin": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "dev": "npm run build && node ./dist/index.js",
+    "make": "npm run build && pkg --compress GZip ."
+  },
+  "pkg": {
+    "scripts": [],
+    "assets": [
+      "node_modules/figlet/fonts/Standard.flf"
+    ],
+    "targets": [
+      "node16.16.0-win-x64"
+    ],
+    "outputPath": "out/"
+  },
+  "type": "commonjs",
+  "keywords": [],
+  "repository": "https://github.com/rainloreley/artnet-usbdmx-converter",
+  "author": "Adrian Baumgart",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "4.1.2",
+    "clear": "^0.1.0",
+    "clui": "^0.3.6",
+    "dmxnet": "^0.9.0",
+    "figlet": "^1.6.0",
+    "inquirer": "8.0.0",
+    "node-hid": "^2.1.2"
+  },
+  "devDependencies": {
+    "@types/clear": "^0.1.2",
+    "@types/clui": "^0.3.2",
+    "@types/figlet": "^1.5.6",
+    "@types/inquirer": "^9.0.3",
+    "@types/node": "^20.8.3",
+    "pkg": "^5.8.1",
+    "typescript": "^5.2.2"
+  }
+}
