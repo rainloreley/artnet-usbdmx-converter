@@ -23,7 +23,7 @@ It then forwards these signals to the FX5 USBDMX interface, and therefore opens 
 git clone https://github.com/rainloreley/artnet-usbdmx-converter.git
 cd artnet-usbdmx-converter
 yarn
-yarn start
+yarn dev
 ```
 
 ## Compiling
