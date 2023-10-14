@@ -18,20 +18,33 @@ $ sudo cp 50-usbdmx.rules /etc/udev/rules.d/
 $ sudo udevadm control --reload-rules
 ```
 
+## Use another interface
 If you're using another interface other than the ones [listed below](#compatible-interfaces), you need to add them to the udev rule manually
 
+First, get all USB devices connected to the computer and find your interface
 ```bash
-# Get all usb devices and find your interface
 $ lsusb
 Bus 003 Device 021: ID 16c0:088b Van Ooijen Technische Informatica USB DMX
 [...]
+```
 
-# First copy the existing udev rules-file like mentioned above, then edit:
+Then copy the existing udev rules-file like mentioned above, and edit it
+
+```bash
 $ sudo nano /etc/udev/rules.d/50-usbdmx.rules
+```
 
-# Duplicate the last line and change "idVendor" and "idProduct" to match the ID returned by lsusb
-# In this example:
-KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="088b", MODE="0666"
+Duplicate the last line and change the values after "idVendor" and "idProduct" to match the ID returned by lsusb
+
+Example for ID `1234:5678`
+```bash
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1234", ATTRS{idProduct}=="5678", MODE="0666"
+```
+
+Save, disconnect the interface and reload the udev rules
+
+```bash
+$ sudo udevadm control --reload-rules
 ```
 
 # Compatible interfaces
