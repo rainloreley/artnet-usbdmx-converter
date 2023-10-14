@@ -53,23 +53,23 @@ $ sudo udevadm control --reload-rules
 - FX5 DMX Interface (Frank Sievertsen)
 - [Nodle U1](https://www.dmxcontrol.de/interfaces/nodle-u1-interface.html) (DMXControl e.V.)
 - [Nodle R4S](https://www.dmxcontrol.de/interfaces/nodle-r4s-interface.html) (DMXControl e.V.)
-- Technically any interface which uses the [usbdmx driver](https://github.com/fx5/usbdmx) by Frank Sievertsen
-  - Won't work out of the box, vendor ID and product ID need to be added manually
+- Technically any interface that uses the [usbdmx driver](https://github.com/fx5/usbdmx) by Frank Sievertsen
+  - Won't work out of the box, vendor ID and product ID need to be [added manually](./src/usbdmx/index.ts)
 
 # Develop & Build
 
 ## Development
 ```bash
-git clone https://github.com/rainloreley/artnet-usbdmx-converter.git
-cd artnet-usbdmx-converter
-yarn
-yarn dev
+$ git clone https://github.com/rainloreley/artnet-usbdmx-converter.git
+$ cd artnet-usbdmx-converter
+$ yarn
+$ yarn dev
 ```
 
 ## Compiling
 ```bash
 # edit package.json -> pkg to add more targets for various platforms
-yarn make
+$ yarn make
 ```
 
 # License
