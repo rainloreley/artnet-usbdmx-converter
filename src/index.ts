@@ -6,12 +6,16 @@ import {clearInterval} from "timers";
 import {exec} from "child_process";
 
 export const defaultConvertHandler = new ConvertHandler();
-var renderControlScreenTimer: NodeJS.Timeout;
+let renderControlScreenTimer: NodeJS.Timeout;
+
+/**
+ * Entry point of the program
+ */
 async function main() {
     setTerminalTitle("ArtNet => USBDMX")
     const selectedInfo = await renderStartupScreen();
     console.log(chalk.blueBright(
-        "Starte ArtNet..."
+        "Starting ArtNet..."
     ));
     console.log(chalk.yellow(
         "Nimm bitte eventuell erscheinende Firewall-Hinweise an"
@@ -20,7 +24,7 @@ async function main() {
 
     console.log(
         chalk.blueBright(
-            `Öffne ${selectedInfo.serial} mit Modus ${selectedInfo.mode}...`
+            `Open ${selectedInfo.serial} using mode ${selectedInfo.mode}...`
         )
     );
     const openInterfaceResponse = await defaultConvertHandler.openInterface(selectedInfo.serial, selectedInfo.mode, selectedInfo.manufacturer, selectedInfo.product);
@@ -34,7 +38,7 @@ async function main() {
     }
     else {
         console.log(
-            chalk.green("✅ System bereit")
+            chalk.green("✅ System ready")
         );
         renderControlScreenTimer = setInterval(() => {
             renderControlScreen();
@@ -66,7 +70,7 @@ process.on('SIGHUP', () => {
 process.on('uncaughtException', (err) => {
     clearInterval(renderControlScreenTimer);
     console.log(
-        chalk.red(`⛔ Ein fataler Fehler ist aufgetreten.`)
+        chalk.red(`⛔ A fatal error has occurred`)
     );
     console.log(err);
     exec("pause press [enter]");
@@ -74,6 +78,10 @@ process.on('uncaughtException', (err) => {
 })
 main();
 
+/**
+ * Sets the title of the terminal
+ * @param title new title
+ */
 function setTerminalTitle(title: string){
     process.stdout.write(
         String.fromCharCode(27) + "]0;" + title + String.fromCharCode(7)

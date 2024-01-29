@@ -2,6 +2,9 @@ import {dmxnet, receiver} from "dmxnet";
 import {DetectedInterface, DMXInterface, getConnectedInterfaces} from "./usbdmx";
 import {clearInterval} from "timers";
 
+/**
+ * Responsible for converting incoming Art-Net data to an USBDMX output
+ */
 export default class ConvertHandler {
     dmxnetManager: dmxnet;
     artNetReceiver: receiver;
@@ -19,19 +22,22 @@ export default class ConvertHandler {
     incomingDataHistory: number[] = [];
     sentDataHistory: number[] = [];
 
-    constructor() {
-        //this.startArtNetReceiver();
-    }
-
+    /**
+     * Starts up the Art-Net receiver
+     */
     startArtNetReceiver = () => {
         this.dmxnetManager = new dmxnet({
             log: {level: "error"}
         });
         this.artNetReceiver = this.dmxnetManager.newReceiver();
-        // @ts-ignore
         this.artNetReceiver.on("data", this.handleIncomingArtNetData);
     }
 
+    /**
+     * Handles incoming Art-Net dara and writes it to the DMX interface
+     * @param data Art-Net data
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     handleIncomingArtNetData = (data: any) => {
         this.incomingDataCounter++;
         if (JSON.stringify(data) != JSON.stringify(this.recentDMXArray)) {
@@ -43,29 +49,40 @@ export default class ConvertHandler {
         }
     }
 
+    /**
+     * Gets available DMX interfaces connected to the computer
+     */
     scanForInterfaces = (): DetectedInterface[] => {
         this.availableInterfaces = getConnectedInterfaces();
         return this.availableInterfaces;
-        /*return this.availableInterfaces.map((e) => {
-            return e.serial;
-        })*/
     }
 
+    /**
+     * Tries to open the connection to a DMX interface
+     * @param serial Serial number of the interface
+     * @param mode Operating mode
+     * @param manufacturer Interface manufacturer ID
+     * @param product Interface product ID
+     * @returns an empty string if the connection was successful or the error message
+     */
     openInterface = async (serial: string, mode: string, manufacturer: string | undefined = undefined, product: string | undefined = undefined): Promise<string> => {
         if (isNaN(parseInt(mode))) return "Invalid mode";
 
         const interfaceIndex = this.availableInterfaces.findIndex((e) => e.serial == serial);
-        if (interfaceIndex === -1) return "Interface nicht gefunden, scanne erneut";
+        if (interfaceIndex === -1) return "Interface not found, please scan again";
+
         const interfacePath = this.availableInterfaces[interfaceIndex].path;
+
         try {
             this.dmxInterface = await DMXInterface.open(interfacePath, serial, manufacturer, product);
             return new Promise<string>((resolve) => {
                 setTimeout( () => {
-                    // @ts-ignore
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
                     const response = this.dmxInterface.setMode(parseInt(mode));
                     this.outputAllowed = true;
                     this.dataPerSecTimer = setInterval(this.parseRequestTimer, 1000);
-                    resolve(response === 0 ? "" : `Fehlercode ${response}`);
+                    resolve(response === 0 ? "" : `Error Code ${response}`);
                 }, 1000);
             })
         }
@@ -75,6 +92,9 @@ export default class ConvertHandler {
         }
     }
 
+    /**
+     * Closes the connection to a DMX interface
+     */
     closeInterface = () => {
         if (this.dmxInterface) {
             this.dmxInterface.close();
@@ -84,6 +104,9 @@ export default class ConvertHandler {
         }
     }
 
+    /**
+     * Processes incoming and sent data history for visualization
+     */
     parseRequestTimer = () => {
         this.incomingDataHistory.push(this.incomingDataCounter);
         if (this.incomingDataHistory.length > 20) {

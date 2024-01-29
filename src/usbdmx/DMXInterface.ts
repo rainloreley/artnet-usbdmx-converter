@@ -1,4 +1,4 @@
-var HID = require('node-hid');
+import HID from "node-hid";
 
 /*
 Return codes
@@ -10,14 +10,16 @@ Return codes
 * 5: other error
 */
 
+/**
+ * Represents a connected DMX interface and handles all communication with it
+ */
 class DMXInterface {
 
     path: string;
     serial: string;
     manufacturer: string | undefined;
     product: string | undefined;
-    currentMode: number = 0;
-    // @ts-ignore
+    currentMode = 0;
     hidDevice: HID.HID;
     dmxout: number[];
     dataCallback: (value: DMXCommand) => void;
@@ -38,7 +40,7 @@ class DMXInterface {
         this.hidDevice.on("data", (data: Buffer) => {
             // received buffer contains 33 bytes, the first one (data[0]) is the page and the rest are the dmx channel values
             // this means we get 32 dmx channels in one package
-            for (var i = 1; i < 33; i++) {
+            for (let i = 1; i < 33; i++) {
                 this.dataCallback({channel: data[0] * 32 + i, value: data[i]});
             }
 
@@ -46,6 +48,13 @@ class DMXInterface {
         this.dmxout = Array(512).fill(0);
     }
 
+    /**
+     * Opens the interface and returns {@link DMXInterface}
+     * @param path HID path of the interface
+     * @param serial Serial number
+     * @param manufacturer Manufacturer ID
+     * @param product Product ID
+     */
     static open = (
         path: string,
         serial: string,
@@ -57,6 +66,9 @@ class DMXInterface {
         });
     }
 
+    /**
+     * Closes the HID connection to the interface
+     */
     close = () => {
         this.setMode(0);
         this.hidDevice.close();
@@ -89,12 +101,16 @@ class DMXInterface {
         * 7: DMX In + PC Out -> DMX Out & DMX In -> PC In
     */
 
+    /**
+     * Sets the DMX mode of the interface
+     * @param mode mode as a number from 0-7
+     */
     setMode = (mode: number): number => {
         // check if mode is between 0 and 7
         if (mode > 7 || mode < 0) return 3;
 
         // create data buffer
-        let _buffer = Buffer.alloc(34);
+        const _buffer = Buffer.alloc(34);
         _buffer[1] = 16;
         _buffer[2] = mode;
 
@@ -109,12 +125,16 @@ class DMXInterface {
         }
     }
 
+    /**
+     * Writes DMX data to the interface
+     * @param data DMX data object array
+     */
     write = (data: DMXCommand[] | undefined): number => {
         let returnStatus = 0;
 
         if (data !== undefined) {
             // update dmx out array with new values
-            for (var _entry of data) {
+            for (const _entry of data) {
                 if (_entry.channel < 1 || _entry.channel > 512) {
                     returnStatus = 1;
                     continue;
@@ -128,24 +148,26 @@ class DMXInterface {
         }
 
         // loop through the 16 "pages" of commands (each write command can hold 32 channels)
-        for (var i = 0; i < 16; i++) {
+        for (let i = 0; i < 16; i++) {
             const _buffer = Buffer.alloc(34);
             // first byte needs to be 0 according to node-hid documentation (reportId)
             _buffer[0] = 0x00;
             // set second byte to page number
             _buffer[1] = i;
-            for (var j = 2; j < 34; j++) {
+            for (let j = 2; j < 34; j++) {
                 // get value for corresponding channel (i * 32 for the page)
                 _buffer[j] = this.dmxout[(i * 32) + j - 2];
             }
-            //console.log(_buffer);
-            const _res = this.hidDevice.write(_buffer);
-            //console.log(_res)
+            this.hidDevice.write(_buffer);
         }
         return returnStatus;
 
     }
 
+    /**
+     * Writes an entire universe to the interface
+     * @param array Array of all DMX values with a length of 512
+     */
     writeMap = (array: number[]): number => {
         if (array.length !== 512) return 4;
         this.dmxout = array;
@@ -155,6 +177,9 @@ class DMXInterface {
 
 }
 
+/**
+ * Data structure containing a pair of a DMX channel and its value
+ */
 interface DMXCommand {
     channel: number;
     value: number;

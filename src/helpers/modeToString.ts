@@ -8,6 +8,11 @@ const modes = [
     '6 - PC Out -> DMX Out & DMX In -> PC In',
     '7 - DMX In + PC Out -> DMX Out & DMX In -> PC In'
 ]
+
+/**
+ * Converts a mode number to a human-readable description string
+ * @param mode
+ */
 export default function modeToString(mode: number) {
     return modes[mode];
 }

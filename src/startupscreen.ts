@@ -4,8 +4,12 @@ import figlet from "figlet";
 import inquirer from "inquirer";
 import {defaultConvertHandler} from "./index";
 import modeToString from "./helpers/modeToString";
-var pjson = require('../package.json');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pjson = require('../package.json');
 
+/**
+ * Data from the user selection about which interface to use
+ */
 interface StartupScreenResponse {
     serial: string,
     mode: string
@@ -28,9 +32,9 @@ export default async function renderStartupScreen(): Promise<StartupScreenRespon
             {
                 type: "list",
                 name: "interfaceserial",
-                message: "Welches Interface soll verwendet werden?",
+                message: "Which Interface should be used?",
                 choices: scannedInterfaces.map((e) => {
-                    var name;
+                    let name;
                     /*
                     * checks if a manufacturer or a product name are defined
                     * if so, format the string like this: manufacturer product (serial)
@@ -53,7 +57,8 @@ export default async function renderStartupScreen(): Promise<StartupScreenRespon
 
                         }
                     }
-                }).concat([new inquirer.Separator(), {name: "Erneut suchen", value: { serial: "retry"}}, {name: "Programm schließen", value: { serial: "exit"}}] as any),
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                }).concat([new inquirer.Separator(), {name: "Retry", value: { serial: "retry"}}, {name: "Close program", value: { serial: "exit"}}] as any),
                 default: 0
             }
         ]
@@ -78,7 +83,7 @@ export default async function renderStartupScreen(): Promise<StartupScreenRespon
                 {
                     type: "list",
                     name: "interfacemode",
-                    message: "Welcher Modus soll verwendet werden?",
+                    message: "Which mode should be used?",
                     choices: [0, 1, 2, 3, 4, 5, 6, 7].map((mode) => modeToString(mode)),
                     default: 0,
                     loop: false
@@ -97,16 +102,19 @@ export default async function renderStartupScreen(): Promise<StartupScreenRespon
     }
 }
 
+/**
+ * Outputs the program information to the console
+ */
 function printCreditHeader() {
     console.log("=================")
     console.log(
         chalk.yellowBright("Version:"),
         `v${pjson.version}`);
     console.log(
-        chalk.yellowBright("Autor:"),
+        chalk.yellowBright("Author:"),
         `${pjson.author}`)
     console.log(
-        chalk.yellowBright("Lizenz:"),
+        chalk.yellowBright("License:"),
         `${pjson.license}`);
     console.log(
         chalk.yellowBright("Code:"),
