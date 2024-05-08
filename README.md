@@ -67,7 +67,7 @@ You can optionally add a configuration file containing parameters for the defaul
 and options regarding the ArtNet transceiver.
 
 To use a configuration file, create a file on your system with the options below. Then start the program with `--config=<path>`
-as a command line argument. Replace `<path> ` with the absolute path to the file.
+as a command line argument. Replace `<path>` with the absolute path to the file.
 
 ## Full config
 
@@ -85,7 +85,7 @@ You can omit any options that you don't want to change, the program will use the
         "hosts": ["127.0.0.1"] // Interfaces to listen to, defaults to ["0.0.0.0"]
       }
     },
-    "transmitter": { // ArtNet transmitter options (USBDMX In)
+    "transmitter": { // ArtNet transmitter options (USBDMX In => ArtNet)
       "ip": "127.0.0.1", // IP to send to, default 255.255.255.255
       "subnet": 0, // Destination subnet, default 0
       "universe": 0, // Destination universe, default 0
@@ -93,7 +93,7 @@ You can omit any options that you don't want to change, the program will use the
       "port": 6454, // Destination UDP Port, default 6454
       "base_refresh_interval": 1000 // Default interval for sending unchanged ArtDmx
     },
-    "receiver": { // ArtNet receiver options (USBDMX Out)
+    "receiver": { // ArtNet receiver options (ArtNet => USBDMX Out)
       "subnet": 0, //Destination subnet, default 0
       "universe": 0, //Destination universe, default 0
       "net": 0, //Destination net, default 0
