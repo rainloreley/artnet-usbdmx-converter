@@ -72,7 +72,7 @@ as a command line argument. Replace `<path> ` with the absolute path to the file
 ## Full config
 
 You can omit any options that you don't want to change, the program will use the default options instead (except for `"interface"`).
-```json lines
+```javascript
 {
   "interface": {}, // see below
   "dmxnet": { // config for ArtNet transceiver
@@ -112,7 +112,7 @@ $ ./artnet-usbdmx-converter outputconfig
 Select the interface and mode to use and copy the output to `"interface"` the configuration file.
 
 Example:
-```json lines
+```javascript
 {
   "interface": {
     "serial": "0000000010000492",
