@@ -29,7 +29,7 @@ async function main() {
     const selectedInfo = defaultConfigStorage.getInterface() ?? await renderStartupScreen();
 
     if (argv._.includes("outputconfig")) {
-        console.log(selectedInfo);
+        console.log(JSON.stringify(selectedInfo, null, 2));
         return;
     }
     console.log(chalk.blueBright(
