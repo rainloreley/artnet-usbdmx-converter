@@ -22,7 +22,8 @@ class DMXInterface {
     currentMode = 0;
     hidDevice: HID.HID;
     dmxout: number[];
-    dataCallback: (value: DMXCommand) => void;
+
+    usbdmxInputCallback: (start: number, values: number[]) => void;
 
     constructor(
         path: string,
@@ -35,14 +36,16 @@ class DMXInterface {
         this.manufacturer = manufacturer;
         this.product = product;
 
-        this.dataCallback = () => {};
         this.hidDevice = new HID.HID(path);
         this.hidDevice.on("data", (data: Buffer) => {
             // received buffer contains 33 bytes, the first one (data[0]) is the page and the rest are the dmx channel values
             // this means we get 32 dmx channels in one package
+
+            const values: number[] = [];
             for (let i = 1; i < 33; i++) {
-                this.dataCallback({channel: data[0] * 32 + i, value: data[i]});
+                values.push(data[i]);
             }
+            this.usbdmxInputCallback(data[0] * 32, values);
 
         })
         this.dmxout = Array(512).fill(0);

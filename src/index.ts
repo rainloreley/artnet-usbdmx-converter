@@ -18,7 +18,7 @@ async function main() {
         "Starting ArtNet..."
     ));
     console.log(chalk.yellow(
-        "Nimm bitte eventuell erscheinende Firewall-Hinweise an"
+        "Please accept any firewall requests"
     ))
     defaultConvertHandler.startArtNetReceiver();
 
@@ -42,7 +42,7 @@ async function main() {
         );
         renderControlScreenTimer = setInterval(() => {
             renderControlScreen();
-        }, 1000);
+        }, 1000)
     }
 }
 

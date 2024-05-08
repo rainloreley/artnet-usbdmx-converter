@@ -36,13 +36,19 @@ export default async function renderControlScreen() {
         `${modeToString(defaultConvertHandler.dmxInterface?.currentMode ?? 0)}`)
     console.log("=================")
 
-    const incomingDataSparkline = Sparkline(defaultConvertHandler.incomingDataHistory, "req/sec");
-    const sentDataSparkline = Sparkline(defaultConvertHandler.sentDataHistory, "req/sec");
+    const artnetInSparkline = Sparkline(defaultConvertHandler.artnetInCountHistory, "req/sec");
+    const artnetOutSparkline = Sparkline(defaultConvertHandler.artnetOutCountHistory, "req/sec");
+    const usbdmxInSparkline = Sparkline(defaultConvertHandler.usbdmxInCountHistory, "req/sec");
+    const usbdmxOutSparkline = Sparkline(defaultConvertHandler.usbdmxOutCountHistory, "req/sec");
 
-    process.stdout.write("Incoming Data   ")
-    process.stdout.write(incomingDataSparkline);
-    process.stdout.write("\nOutgoing Data   ")
-    process.stdout.write(sentDataSparkline);
+    process.stdout.write("ArtNet In\t")
+    process.stdout.write(artnetInSparkline);
+    process.stdout.write("\nArtNet Out\t")
+    process.stdout.write(artnetOutSparkline);
+    process.stdout.write("\nUSBDMX In\t")
+    process.stdout.write(usbdmxInSparkline);
+    process.stdout.write("\nUSBDMX Out\t")
+    process.stdout.write(usbdmxOutSparkline);
 
     console.log("\n");
     console.log(chalk.yellow(
