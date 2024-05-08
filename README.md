@@ -109,7 +109,7 @@ You can generate these parameters by running:
 $ ./artnet-usbdmx-converter outputconfig
 ```
 
-Select the interface and mode to use and copy the output to `"interface"` the configuration file.
+Select the interface and mode to use and copy the output to `"interface"` inside the configuration file.
 
 Example:
 ```javascript
