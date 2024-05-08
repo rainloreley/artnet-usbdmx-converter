@@ -1,8 +1,5 @@
 name: Build app
-on:
-  push:
-    branches:
-      - main
+on: workflow_dispatch
 
 jobs:
   build:
