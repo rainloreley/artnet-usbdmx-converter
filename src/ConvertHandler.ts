@@ -51,7 +51,7 @@ export default class ConvertHandler {
     }
 
     /**
-     * Handles incoming Art-Net dara and writes it to the DMX interface.
+     * Handles incoming Art-Net data and writes it to the DMX interface.
      * @param data Art-Net data
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
