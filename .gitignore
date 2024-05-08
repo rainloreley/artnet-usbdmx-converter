@@ -3,3 +3,4 @@ dist
 out/
 .idea/
 yarn-error.log
+appconfig.json

@@ -52,6 +52,6 @@ export default async function renderControlScreen() {
 
     console.log("\n");
     console.log(chalk.yellow(
-        "Close the window or click Ctrl+C to terminate the program"
+        "Close the window or press Ctrl+C to terminate the program"
     ))
 }

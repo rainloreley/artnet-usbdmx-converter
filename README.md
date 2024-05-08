@@ -56,6 +56,74 @@ $ sudo udevadm control --reload-rules
 - Technically any interface that uses the [usbdmx driver](https://github.com/fx5/usbdmx) by Frank Sievertsen
   - Won't work out of the box, vendor ID and product ID need to be [added manually](./src/usbdmx/index.ts)
 
+# Automatic restart
+
+To restart the program automatically in case of a crash or another exception, add `--autoretry` as a command line argument.
+This does not apply in the following cases:
+- Intentional exit (Crtl+C, "kill" command, closing the terminal)
+- Invalid configuration file
+# Configuration File
+You can optionally add a configuration file containing parameters for the default USBDMX interface
+and options regarding the ArtNet transceiver.
+
+To use a configuration file, create a file on your system with the options below. Then start the program with `--config=<path>`
+as a command line argument. Replace `<path> ` with the absolute path to the file.
+
+## Full config
+
+You can omit any options that you don't want to change, the program will use the default options instead (except for `"interface"`).
+```json lines
+{
+  "interface": {}, // see below
+  "dmxnet": { // config for ArtNet transceiver
+    "main": { // general options
+      "log": {
+        "level": "info", // available: error, warn, info, verbose, debug, silly
+        "oem": 0, // OEM Code from artisticlicense, default to dmxnet OEM.
+        "sName": "Text", // 17 char long node description, default to "usbdmx"
+        "lName": "Long description", // 63 char long node description, default to "ArtNet-USBDMX-Converter"
+        "hosts": ["127.0.0.1"] // Interfaces to listen to, defaults to ["0.0.0.0"]
+      }
+    },
+    "transmitter": { // ArtNet transmitter options (USBDMX In)
+      "ip": "127.0.0.1", // IP to send to, default 255.255.255.255
+      "subnet": 0, // Destination subnet, default 0
+      "universe": 0, // Destination universe, default 0
+      "net": 0, // Destination net, default 0
+      "port": 6454, // Destination UDP Port, default 6454
+      "base_refresh_interval": 1000 // Default interval for sending unchanged ArtDmx
+    },
+    "receiver": { // ArtNet receiver options (USBDMX Out)
+      "subnet": 0, //Destination subnet, default 0
+      "universe": 0, //Destination universe, default 0
+      "net": 0, //Destination net, default 0
+    }
+  }
+}
+```
+## Generate config for interface
+To automatically select a USBDMX Interface on startup you need to set its parameters in the configuration file under `"interfaces"`.
+
+You can generate these parameters by running:
+```bash
+$ ./artnet-usbdmx-converter outputconfig
+```
+
+Select the interface and mode to use and copy the output to `"interface"` the configuration file.
+
+Example:
+```json lines
+{
+  "interface": {
+    "serial": "0000000010000492",
+    "mode": "6",
+    "manufacturer": "Digital Enlightenment",
+    "product": "USB DMX"
+  },
+  [...]
+}
+```
+
 # Develop & Build
 
 ## Development

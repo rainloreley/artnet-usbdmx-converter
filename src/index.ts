@@ -4,16 +4,34 @@ import renderStartupScreen from "./startupscreen";
 import renderControlScreen from "./controlscreen";
 import {clearInterval} from "timers";
 import {exec} from "child_process";
+import ConfigStorage from "./config/ConfigStorage";
+
+import minimist from "minimist";
+const argv = minimist(process.argv.slice(2));
 
 export const defaultConvertHandler = new ConvertHandler();
+export const defaultConfigStorage = new ConfigStorage();
 let renderControlScreenTimer: NodeJS.Timeout;
 
 /**
  * Entry point of the program
  */
 async function main() {
+
+    if (typeof argv["config"] === "string") {
+        defaultConfigStorage.loadConfig(argv["config"]);
+    }
+
     setTerminalTitle("ArtNet => USBDMX")
-    const selectedInfo = await renderStartupScreen();
+
+    defaultConvertHandler.scanForInterfaces();
+
+    const selectedInfo = defaultConfigStorage.getInterface() ?? await renderStartupScreen();
+
+    if (argv._.includes("outputconfig")) {
+        console.log(selectedInfo);
+        return;
+    }
     console.log(chalk.blueBright(
         "Starting ArtNet..."
     ));
@@ -34,7 +52,7 @@ async function main() {
                 openInterfaceResponse
             )
         )
-        return process.exit(1);
+        throw "MissingInterfaceError"
     }
     else {
         console.log(
@@ -73,16 +91,24 @@ process.on('uncaughtException', (err) => {
         chalk.red(`⛔ A fatal error has occurred`)
     );
     console.log(err);
-    exec("pause press [enter]");
-    process.exit(0);
+    if (argv["autoretry"] === true) {
+        console.log("Auto-restart enabled, will restart now...")
+        setTimeout(() => {
+            main();
+        }, 2000);
+    } else {
+        exec("pause press [enter]");
+        process.exit(0);
+    }
 })
+
 main();
 
 /**
  * Sets the title of the terminal
  * @param title new title
  */
-function setTerminalTitle(title: string){
+function setTerminalTitle(title: string) {
     process.stdout.write(
         String.fromCharCode(27) + "]0;" + title + String.fromCharCode(7)
     );

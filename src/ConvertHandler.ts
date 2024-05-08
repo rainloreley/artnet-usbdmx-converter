@@ -1,6 +1,7 @@
 import {dmxnet, receiver, sender} from "dmxnet";
 import {DetectedInterface, DMXInterface, getConnectedInterfaces} from "./usbdmx";
 import {clearInterval} from "timers";
+import {defaultConfigStorage} from "./index";
 
 /**
  * Responsible for converting incoming Art-Net data to an USBDMX output
@@ -33,20 +34,9 @@ export default class ConvertHandler {
      * Starts up the Art-Net receiver
      */
     startArtNetReceiver = () => {
-        this.dmxnetManager = new dmxnet({
-            log: {level: "error"},
-            sName: "usbdmx",
-            lName: "ArtNet-USBDMX-Converter",
-        });
-        this.artNetReceiver = this.dmxnetManager.newReceiver();
-        this.artNetSender = this.dmxnetManager.newSender({
-            ip: "255.255.255.255", //IP to send to, default 255.255.255.255
-            subnet: 0, //Destination subnet, default 0
-            universe: 0, //Destination universe, default 0
-            net: 0, //Destination net, default 0
-            port: 6454, //Destination UDP Port, default 6454
-            base_refresh_interval: 1000 // Default interval for sending unchanged ArtDmx
-        });
+        this.dmxnetManager = new dmxnet(defaultConfigStorage.getDmxNetConfig());
+        this.artNetReceiver = this.dmxnetManager.newReceiver(defaultConfigStorage.getDmxNetReceiverConfig());
+        this.artNetSender = this.dmxnetManager.newSender(defaultConfigStorage.getDmxNetSenderConfig());
         this.artNetReceiver.on("data", this.handleIncomingArtNetData);
     }
 

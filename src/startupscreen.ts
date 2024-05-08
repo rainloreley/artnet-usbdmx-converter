@@ -4,13 +4,14 @@ import figlet from "figlet";
 import inquirer from "inquirer";
 import {defaultConvertHandler} from "./index";
 import modeToString from "./helpers/modeToString";
+import {DetectedInterface} from "./usbdmx";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pjson = require('../package.json');
 
 /**
  * Data from the user selection about which interface to use
  */
-interface StartupScreenResponse {
+export interface StartupScreenResponse {
     serial: string,
     mode: string
     manufacturer: string | undefined,
@@ -25,7 +26,7 @@ export default async function renderStartupScreen(): Promise<StartupScreenRespon
     );
 
     printCreditHeader();
-    const scannedInterfaces = defaultConvertHandler.scanForInterfaces();
+    const scannedInterfaces: DetectedInterface[] = defaultConvertHandler.availableInterfaces;
 
     const interfaceSelectionResponse = await inquirer.prompt(
         [
