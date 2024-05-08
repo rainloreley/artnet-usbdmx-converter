@@ -65,7 +65,9 @@ export default class ConvertHandler {
         this.usbdmxInCounter++;
         if (this.outputAllowed) {
             for (let i = 0; i < data.length; i++) {
-                this.artNetSender.prepChannel(startChannel + i, data[i]);
+                if ((startChannel + i) >= 0 && (startChannel + i) < 512 && data[i] >= 0 && data[i] < 256) {
+                    this.artNetSender.prepChannel(startChannel + i, data[i]);
+                }
             }
             this.artnetOutCounter++;
             this.artNetSender.transmit();
